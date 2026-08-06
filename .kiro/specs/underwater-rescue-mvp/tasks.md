@@ -88,7 +88,7 @@
   - **Acceptance**: Camera view renders colored shapes for vehicle, victims, obstacles on Canvas with visibility degradation
   - **Time**: 60 min
 
-- [ ] 4.4 Implement raycast-based sonar range detector
+- [x] 4.4 Implement raycast-based sonar range detector
   - **Acceptance**: Sonar emits N beams, returns range values for each beam, detects obstacles and targets
   - **Time**: 60 min
 
