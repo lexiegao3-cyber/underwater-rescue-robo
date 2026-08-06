@@ -92,7 +92,7 @@
   - **Acceptance**: Sonar emits N beams, returns range values for each beam, detects obstacles and targets
   - **Time**: 60 min
 
-- [ ] 4.5 Implement 2D occupancy grid map
+- [x] 4.5 Implement 2D occupancy grid map
   - **Acceptance**: Occupancy map updates with free/occupied/unknown cells from sensor data
   - **Time**: 60 min
 
