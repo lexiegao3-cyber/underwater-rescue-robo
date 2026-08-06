@@ -18,21 +18,21 @@
   - **Acceptance**: `npm create vite@latest` runs successfully, TypeScript strict mode enabled
   - **Time**: 15 min
 
-- [ ] 1.2 Add project structure and base configuration
+- [x] 1.2 Add project structure and base configuration
   - **Acceptance**: Folders created: `src/engine`, `src/components`, `src/types`, `src/i18n`, `src/utils`
   - **Time**: 10 min
 
-- [ ] 1.3 Add README with simulation disclaimer
+- [x] 1.3 Add README with simulation disclaimer
   - **Acceptance**: README states "This is a simulation using a scripted policy and does not provide medical or real rescue guarantees"
   - **Time**: 15 min
 
-- [ ] 1.4 Add MIT license and data-use policy
+- [x] 1.4 Add MIT license and data-use policy
   - **Acceptance**: LICENSE file created, data policy placeholder in README
   - **Time**: 10 min
 
 ### 2. Browser-based deterministic mission engine
 
-- [ ] 2.1 Define TypeScript types for mission state
+- [x] 2.1 Define TypeScript types for mission state
   - **Acceptance**: Types defined for: MissionState, UUVState, BatteryState, OxygenState, MissionPhase
   - **Time**: 20 min
 
