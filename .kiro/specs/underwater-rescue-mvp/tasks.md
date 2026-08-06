@@ -96,7 +96,7 @@
   - **Acceptance**: Occupancy map updates with free/occupied/unknown cells from sensor data
   - **Time**: 60 min
 
-- [ ] 4.6 Implement perception detector with confidence scores
+- [x] 4.6 Implement perception detector with confidence scores
   - **Acceptance**: Detector returns objects with type, position, confidence (0-1), source modality (camera/sonar/marker)
   - **Time**: 45 min
 

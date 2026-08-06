@@ -8,5 +8,6 @@ export * from './collision';
 export * from './kinematics';
 export * from './missionEngine';
 export * from './occupancyGrid';
+export * from './perceptionDetector';
 export * from './scenarioGenerator';
 export * from './sonarSimulator';
