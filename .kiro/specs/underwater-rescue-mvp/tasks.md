@@ -102,23 +102,23 @@
 
 ### 5. MFI-inspired potential-field scripted policy
 
-- [ ] 5.1 Implement potential-field attraction to target
+- [x] 5.1 Implement potential-field attraction to target
   - **Acceptance**: Attraction force increases as UUV approaches target, unit test passes
   - **Time**: 30 min
 
-- [ ] 5.2 Implement potential-field repulsion from obstacles
+- [x] 5.2 Implement potential-field repulsion from obstacles
   - **Acceptance**: Repulsion force increases near obstacles, unit test passes
   - **Time**: 30 min
 
-- [ ] 5.3 Implement constant water current compensation
+- [x] 5.3 Implement constant water current compensation
   - **Acceptance**: Policy adds current vector (constant) to motion commands
   - **Time**: 20 min
 
-- [ ] 5.4 Implement scripted policy action generator
+- [x] 5.4 Implement scripted policy action generator
   - **Acceptance**: `scriptedPolicy.getAction(state)` returns velocity and angular velocity commands
   - **Time**: 45 min
 
-- [ ] 5.5 Add action clipping to actuator limits
+- [x] 5.5 Add action clipping to actuator limits
   - **Acceptance**: Actions clamped to max velocity and max angular velocity
   - **Time**: 15 min
 

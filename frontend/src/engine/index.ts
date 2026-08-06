@@ -9,5 +9,6 @@ export * from './kinematics';
 export * from './missionEngine';
 export * from './occupancyGrid';
 export * from './perceptionDetector';
+export * from './potentialFieldPolicy';
 export * from './scenarioGenerator';
 export * from './sonarSimulator';
