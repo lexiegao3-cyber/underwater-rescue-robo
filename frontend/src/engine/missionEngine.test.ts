@@ -67,6 +67,22 @@ describe('MissionEngine', () => {
       expect(state.oxygen.initial).toBe(100);
     });
 
+    it('should preserve infinite initial safety distance', () => {
+      const engine = new MissionEngine(config);
+      const state = engine.getState();
+
+      expect(state.safetyMargin.nearestObstacleDistance).toBe(Infinity);
+      expect(state.safetyMargin.minObstacleDistance).toBe(Infinity);
+    });
+
+    it('should create identical metadata for identical replay configuration', () => {
+      const first = new MissionEngine(config).getState();
+      const second = new MissionEngine(config).getState();
+
+      expect(second.missionId).toBe(first.missionId);
+      expect(second.startTime).toBe(first.startTime);
+    });
+
     it('should use provided water current', () => {
       const configWithCurrent = {
         ...config,
@@ -151,6 +167,21 @@ describe('MissionEngine', () => {
       expect(state.uuv.position.x).toBeCloseTo(0, 6);
       expect(state.uuv.position.y).toBeCloseTo(0, 6);
       expect(state.uuv.heading).toBeCloseTo(0.1, 6);
+    });
+
+    it('should report velocity using the pre-step heading', () => {
+      const engine = new MissionEngine({ ...config, initialHeading: Math.PI / 2 });
+      const action: ControlAction = {
+        forwardVelocity: 1.0,
+        angularVelocity: 1.0,
+        timestamp: 0,
+      };
+
+      engine.step(action);
+      const state = engine.getState();
+
+      expect(state.uuv.velocity.vx).toBeCloseTo(0, 6);
+      expect(state.uuv.velocity.vy).toBeCloseTo(1, 6);
     });
 
     it('should apply water current to motion', () => {

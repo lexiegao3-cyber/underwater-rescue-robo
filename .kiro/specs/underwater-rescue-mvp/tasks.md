@@ -14,7 +14,7 @@
 
 ### 1. React + TypeScript + Vite project setup
 
-- [ ] 1.1 Initialize Vite + React + TypeScript project
+- [x] 1.1 Initialize Vite + React + TypeScript project
   - **Acceptance**: `npm create vite@latest` runs successfully, TypeScript strict mode enabled
   - **Time**: 15 min
 
@@ -44,33 +44,33 @@
   - **Acceptance**: Seeded RNG produces identical sequences for same seed, unit test passes
   - **Time**: 30 min
 
-- [ ] 2.4 Implement 2D kinematic UUV motion model
+- [x] 2.4 Implement 2D kinematic UUV motion model
   - **Acceptance**: UUV updates X, Y, heading based on velocity commands, unit test for position update passes
   - **Time**: 45 min
 
-- [ ] 2.5 Implement deterministic mission state update loop
+- [x] 2.5 Implement deterministic mission state update loop
   - **Acceptance**: `missionEngine.step()` advances mission by one timestep deterministically
   - **Time**: 60 min
 
 ### 3. Three scenarios: normal, low_visibility, low_oxygen
 
-- [ ] 3.1 Implement seeded scenario generator
+- [x] 3.1 Implement seeded scenario generator
   - **Acceptance**: `generateScenario(seed, scenarioName)` returns reproducible scenario config
   - **Time**: 45 min
 
-- [ ] 3.2 Create "normal" scenario template
+- [x] 3.2 Create "normal" scenario template
   - **Acceptance**: Normal scenario has 4-6 static obstacles, 1 vehicle, 2-3 victims, visibility=1.0, current magnitude=0.0 m/s, battery=100%, and oxygen=100 units
   - **Time**: 30 min
 
-- [ ] 3.3 Create "low_visibility" scenario template
+- [x] 3.3 Create "low_visibility" scenario template
   - **Acceptance**: Low visibility scenario has visibility=0.35, current magnitude=0.1 m/s, increased obstacle density, and sonar range behavior remains available
   - **Time**: 30 min
 
-- [ ] 3.4 Create "low_oxygen" scenario template
+- [x] 3.4 Create "low_oxygen" scenario template
   - **Acceptance**: Low oxygen scenario has initial oxygen=25 units, current magnitude=0.1 m/s, and produces the 20-percent warning during a sufficiently long mission
   - **Time**: 30 min
 
-- [ ] 3.5 Implement difficulty parameters
+- [x] 3.5 Implement difficulty parameters
   - **Acceptance**: `easy`, `standard`, and `hard` change only documented obstacle density, target distance, and current magnitude; safety thresholds remain unchanged
   - **Time**: 30 min
 

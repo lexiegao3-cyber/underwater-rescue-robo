@@ -30,6 +30,33 @@ export interface MissionConfig {
   visibility: number;
   initialBattery: number;
   initialOxygen: number;
+  /** Optional values for reproducible replay or a real UI session. */
+  missionId?: string;
+  startTime?: string;
+}
+
+/** Create a stable UUID-shaped identifier for deterministic replay. */
+function createDeterministicMissionId(scenarioName: string, seed: number): string {
+  let hash = 2166136261;
+  const input = `${scenarioName}:${seed}`;
+
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  const hex = (value: number) => (value >>> 0).toString(16).padStart(8, '0');
+  const first = hex(hash);
+  const second = hex(Math.imul(hash ^ 0x9e3779b9, 0x45d9f3b));
+  const third = `4${hex(Math.imul(hash ^ 0x85ebca6b, 0xc2b2ae35)).slice(1)}`;
+  const fourth = `8${hex(Math.imul(hash ^ 0x27d4eb2f, 0x165667b1)).slice(1)}`;
+  const fifth = `${hex(Math.imul(hash ^ 0x94d049bb, 0x27d4eb2d))}${hex(hash ^ 0x7f4a7c15)}`;
+
+  return `${first}-${second.slice(0, 4)}-${third}-${fourth}-${fifth}`;
+}
+
+function cloneMissionState(state: MissionState): MissionState {
+  return structuredClone(state);
 }
 
 /**
@@ -44,14 +71,14 @@ export class MissionEngine {
   constructor(config: MissionConfig) {
     this.config = config;
     this.initialState = this.createInitialMissionState(config);
-    this.currentState = JSON.parse(JSON.stringify(this.initialState)); // Deep copy
+    this.currentState = cloneMissionState(this.initialState);
   }
 
   /**
    * Create initial mission state from configuration
    */
   private createInitialMissionState(config: MissionConfig): MissionState {
-    const startTime = new Date().toISOString();
+    const startTime = config.startTime ?? '1970-01-01T00:00:00.000Z';
     
     // Initialize UUV state
     const uuvState: UUVState = {
@@ -86,7 +113,7 @@ export class MissionEngine {
     };
 
     return {
-      missionId: crypto.randomUUID(),
+      missionId: config.missionId ?? createDeterministicMissionId(config.scenarioName, config.seed),
       scenarioName: config.scenarioName,
       seed: config.seed,
       language: config.language,
@@ -138,14 +165,14 @@ export class MissionEngine {
    * Get current mission state (read-only copy)
    */
   getState(): Readonly<MissionState> {
-    return JSON.parse(JSON.stringify(this.currentState));
+    return cloneMissionState(this.currentState);
   }
 
   /**
    * Reset mission to initial state
    */
   reset(): void {
-    this.currentState = JSON.parse(JSON.stringify(this.initialState));
+    this.currentState = cloneMissionState(this.initialState);
   }
 
   /**
@@ -178,8 +205,10 @@ export class MissionEngine {
     });
     
     // Compute velocity for state
-    const velocityX = forwardVelocity * Math.cos(newPose.heading) + this.currentState.waterCurrent.x;
-    const velocityY = forwardVelocity * Math.sin(newPose.heading) + this.currentState.waterCurrent.y;
+    // Position was integrated using the pre-step heading, so report the same
+    // world-frame velocity that produced this displacement.
+    const velocityX = forwardVelocity * Math.cos(currentPose.heading) + this.currentState.waterCurrent.x;
+    const velocityY = forwardVelocity * Math.sin(currentPose.heading) + this.currentState.waterCurrent.y;
     
     // Calculate path length increment
     const dx = newPose.position.x - this.currentState.uuv.position.x;
