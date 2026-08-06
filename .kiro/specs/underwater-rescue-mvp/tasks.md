@@ -84,7 +84,7 @@
   - **Acceptance**: `checkCollision(uuv, obstacles)` returns true for overlaps, unit test passes
   - **Time**: 45 min
 
-- [ ] 4.3 Implement schematic camera view generator
+- [x] 4.3 Implement schematic camera view generator
   - **Acceptance**: Camera view renders colored shapes for vehicle, victims, obstacles on Canvas with visibility degradation
   - **Time**: 60 min
 
