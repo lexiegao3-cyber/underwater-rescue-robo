@@ -76,11 +76,11 @@
 
 ### 4. Static obstacles and synthetic camera/sonar-like outputs
 
-- [ ] 4.1 Implement static obstacle placement
+- [x] 4.1 Implement static obstacle placement
   - **Acceptance**: Scenario contains rocks (circles) and pipes (rectangles) at fixed positions
   - **Time**: 30 min
 
-- [ ] 4.2 Implement 2D collision detection (circle-circle, circle-rectangle)
+- [x] 4.2 Implement 2D collision detection (circle-circle, circle-rectangle)
   - **Acceptance**: `checkCollision(uuv, obstacles)` returns true for overlaps, unit test passes
   - **Time**: 45 min
 
