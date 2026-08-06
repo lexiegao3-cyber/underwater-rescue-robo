@@ -22,19 +22,23 @@
 - Vite
 - HTML5 Canvas or SVG for the 2D top-down occupancy map visualization
 - Lightweight charting library for metrics and time series
-- Browser WebSocket client for live mission updates
+- Browser event stream for live mission updates
 
-### Backend
+### MVP simulation engine
 
-- Python
-- FastAPI
-- WebSocket endpoint for mission state streaming
-- Pydantic models for configuration, observations, actions, events, and results
+- TypeScript modules running in the browser
 - Deterministic seeded simulator
+- Plain typed interfaces for configuration, observations, actions, events, and results
+- No Python service, WebSocket endpoint, or GPU is required for the MVP
+
+### Later research service
+
+- Python and FastAPI may be added later for a learned-policy service
+- WebSocket transport and Pydantic models are research/deployment extensions, not MVP dependencies
 
 ### Data and model layer
 
-- JSON/CSV for scenario configuration and mission results
+- JSON for scenario configuration and mission results in the MVP; CSV is deferred
 - PNG or WebP for synthetic camera and sonar-like frames
 - NumPy arrays for occupancy maps and sensor tensors
 - A `PerceptionAdapter` interface with a deterministic demo implementation
@@ -43,11 +47,8 @@
 
 ### Deployment
 
-- Docker Compose for local development
-- One browser UI service
-- One simulation API service
-- Optional reverse proxy for cloud deployment
-- Static hosting deployment (Vercel, Netlify, or GitHub Pages) for the MVP demo
+- Static hosting deployment (Vercel, Netlify, or GitHub Pages) for the browser-only MVP demo
+- Optional Docker Compose and API service are deferred until the learned-policy research phase
 - No GPU requirement for the MVP path
 
 ## 3. High-level architecture
@@ -60,9 +61,9 @@ Browser UI
   ├── Manual Control with Command Priority
   ├── Event Log
   └── Results Summary with JSON Export
-          │ WebSocket / REST
+          │ in-browser typed interfaces
           ▼
-Mission API
+Browser Mission Engine
   ├── Mission Manager
   ├── Scenario Loader
   ├── Sensor Simulator (Raycast Sonar)
@@ -78,6 +79,8 @@ Mission API
           │
           ▼
 Synthetic Scenario Assets and Reproducible Mission Logs
+
+The browser-only architecture is the MVP deployment target. A later research adapter may move the mission engine behind REST/WebSocket APIs without changing the UI-facing interfaces.
 ```
 
 ## 4. Mission state model
@@ -224,6 +227,16 @@ When return mode is activated:
   - Display an error message in the selected language
   - Offer an "Abort Mission" action to the operator
   - Log the failure event in the mission event log
+
+### MVP safety thresholds
+
+The default configurable thresholds are:
+
+- safe obstacle margin: 1.5 meters
+- critical obstacle distance: 0.8 meters
+- minimum battery reserve for return: 30 percent
+- minimum oxygen reserve for return: 30 percent
+- rectangular mission boundary: scenario-defined, default 100 m by 100 m
 
 ## 7. Human-in-the-loop flow
 
@@ -390,7 +403,7 @@ When the operator requests a mission export, the system SHALL produce a JSON fil
 
 ### Integration tests
 
-- start mission and receive WebSocket updates
+- start mission and receive in-browser mission updates
 - confirm target from queue and transition to approach
 - reject target and return to searching
 - pause, resume, and verify command priority
@@ -415,7 +428,7 @@ Run one normal scenario, one low-visibility scenario, and one low-oxygen scenari
 
 ## 12. Research extension boundary
 
-The MVP uses an **MFI-inspired scripted deterministic policy** based on potential-field navigation. The later research implementation may replace `ScriptedPolicyAdapter` with a learned TD3 policy and add CNN-based perception encoders, but the UI and mission API should remain stable.
+The MVP uses an **MFI-inspired scripted deterministic policy** based on potential-field navigation. This is a transparent demonstration baseline, not an implementation claim for the learned MFI-PP-CNN-TD3/TD3-IMP algorithm. The later research implementation may replace `ScriptedPolicyAdapter` with a learned TD3 policy and add CNN-based perception encoders, but the UI and mission API should remain stable.
 
 Features reserved for future research phases (explicitly excluded from MVP):
 

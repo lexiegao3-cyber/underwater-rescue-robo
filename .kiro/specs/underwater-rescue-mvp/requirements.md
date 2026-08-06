@@ -6,7 +6,7 @@ The product is a bilingual browser-based proof-of-concept for a human-in-the-loo
 
 The simulated UUV shall search for a submerged vehicle, identify suspected victims inside and outside the vehicle, avoid rocks and pipes, plan a safe approach using an MFI-inspired scripted deterministic policy, and hand the final target decision to a human rescuer.
 
-The MVP is a simulation and decision-support demonstration. It is not a certified rescue device, medical device, life-sign detector, oxygen-delivery controller, or autonomous rescue system. All navigation is performed by an MFI-inspired deterministic scripted policy for the MVP; learned policy models are reserved for later research phases.
+The MVP is a simulation and decision-support demonstration. It is not a certified rescue device, medical device, life-sign detector, oxygen-delivery controller, or autonomous rescue system. The MVP does not implement the learned MFI-PP-CNN-TD3/TD3-IMP algorithm from the research paper; it uses a deterministic potential-field baseline whose attraction, repulsion, and current-compensation terms are inspired by the paper's prior-guided navigation idea. Learned policy models are reserved for later research phases.
 
 ## 2. Primary users and audience
 
@@ -26,7 +26,7 @@ The MVP is a simulation and decision-support demonstration. It is not a certifie
 
 - Demonstrate a complete search-to-approach mission loop.
 - Make the MFI-inspired scripted policy navigation, safety layer, and human approval visible in the UI.
-- Provide a credible product-shaped interface for future paper experiments and cloud deployment.
+- Provide a credible product-shaped interface for future paper experiments and static cloud deployment.
 - Run without a local NVIDIA GPU by using deterministic simulation and a scripted policy in the MVP.
 - Keep all confidential or non-public source data out of the public repository.
 - Use static obstacles and a 2D top-down map to keep the MVP achievable within a two-day development window.
@@ -72,7 +72,7 @@ THE SYSTEM SHALL expose the obstacle distance and risk level to the navigation l
 ### R3. Multimodal sensor simulation
 
 WHEN a mission is running
-THE SYSTEM SHALL produce synchronized synthetic sensor outputs for camera view, forward-looking sonar range data, depth sensor, local 2D occupancy map, and structured vehicle state.
+THE SYSTEM SHALL produce synchronized lightweight synthetic outputs for a camera-like view, forward-looking sonar-like range data, depth/state values, a local 2D occupancy map, and structured vehicle state. The MVP SHALL use generated scene data and SHALL NOT require image-model training.
 
 WHEN the scene visibility is degraded
 THE SYSTEM SHALL reduce camera quality (increase noise, reduce contrast) and preserve a separate sonar-based range detection so the UI demonstrates sensor complementarity. Sonar simulation SHALL use simple raycast-based range detection without multipath or advanced signal processing.
@@ -119,6 +119,14 @@ THE SYSTEM SHALL record the event and display it in the mission event log.
 WHEN the operator is in manual control mode
 THE SYSTEM SHALL keep the safety layer active and override unsafe manual commands to prevent collisions and constraint violations.
 
+The manual control mapping SHALL be:
+
+- `W` or the forward button: move forward
+- `S` or the backward button: move backward
+- `A` or the rotate-left button: rotate left
+- `D` or the rotate-right button: rotate right
+- `Space` or the pause button: pause or resume
+
 ### R7. Human-in-the-loop controls
 
 WHEN a suspected vehicle or victim target is detected
@@ -140,6 +148,8 @@ WHEN the return path computation fails (no feasible path exists due to obstacles
 THE SYSTEM SHALL display an error message to the operator and offer an "Abort Mission" action.
 
 The command priority order SHALL be: pause > manual takeover > return > autonomous mode.
+
+The MVP safety thresholds SHALL be explicit and configurable: safe obstacle margin 1.5 meters, critical obstacle distance 0.8 meters, minimum battery reserve for return 30 percent, minimum oxygen reserve for return 30 percent, and a rectangular mission boundary defined by the scenario configuration.
 
 ### R8. Oxygen-resource simulation
 
@@ -174,8 +184,10 @@ THE SYSTEM SHALL display success/failure status, target-confirmation status, col
 WHEN the same scenario seed and configuration are used
 THE SYSTEM SHALL reproduce the same simulated environment and baseline mission outcome within a numerical tolerance of ±1e-6 for floating-point calculations.
 
+The mission event log SHALL use the following structure for each event: `timestamp` in seconds, `type`, `severity` (`info`, `warning`, or `critical`), `messageKey`, and optional `relatedTargetId` or `relatedObstacleId`.
+
 WHEN the operator requests a mission export
-THE SYSTEM SHALL export mission metadata and results as JSON or CSV according to the following schema:
+THE SYSTEM SHALL export mission metadata and results as JSON according to the following schema. CSV export is reserved for a later research phase.
 
 **JSON Export Schema:**
 ```json
@@ -204,6 +216,16 @@ THE SYSTEM SHALL export mission metadata and results as JSON or CSV according to
   "oxygenInitial": "float (units)",
   "oxygenFinal": "float (units)",
   "manualInterventions": "integer",
+  "events": [
+    {
+      "timestamp": "float (seconds)",
+      "type": "string",
+      "severity": "info | warning | critical",
+      "messageKey": "string",
+      "relatedTargetId": "string | null",
+      "relatedObstacleId": "string | null"
+    }
+  ],
   "trajectory": [
     {
       "timestamp": "float (seconds)",
@@ -227,6 +249,18 @@ THE SYSTEM SHALL include dataset attribution and license notes for every public 
 
 THE SYSTEM SHALL label demo perception and navigation results as simulation results unless they are supported by reproducible experiments.
 
+### R13. Scenario, difficulty, and detection definitions
+
+The MVP SHALL provide exactly three named demonstration scenarios:
+
+- `normal`: visibility 1.0, initial oxygen 100 units, constant current magnitude 0.0 m/s
+- `low_visibility`: visibility 0.35, initial oxygen 100 units, constant current magnitude 0.1 m/s; sonar range behavior remains available
+- `low_oxygen`: visibility 1.0, initial oxygen 25 units, constant current magnitude 0.1 m/s; the warning threshold remains 20 percent of the configured initial oxygen
+
+The MVP SHALL provide three difficulty values: `easy`, `standard`, and `hard`. Difficulty SHALL change only obstacle density, target distance, and current magnitude using documented seeded parameters; it SHALL NOT change command priority or safety thresholds.
+
+A camera-like detection SHALL be generated when a target is within 4 meters and visibility is at least 0.35. A sonar-like detection SHALL be generated when a target or obstacle is within 8 meters. An internal suspected victim SHALL be detected only through the pre-placed sonar/marker representation and SHALL never be represented as visible through the vehicle by the camera-like view. A suspected target with confidence at least 0.45 SHALL enter the sequential human-confirmation queue.
+
 ### R12. Browser deployment
 
 WHEN the application is deployed to a static hosting service (e.g., Vercel, Netlify, GitHub Pages)
@@ -234,13 +268,13 @@ THE SYSTEM SHALL provide a browser-accessible demo without requiring an NVIDIA G
 
 THE SYSTEM SHALL run entirely on CPU using an MFI-inspired deterministic scripted policy and lightweight simulation.
 
-THE SYSTEM SHALL keep the simulation service and UI interfaces documented so a later GPU-backed learned policy service can replace the scripted baseline without redesigning the UI.
+THE SYSTEM SHALL keep the browser mission engine, perception adapter, policy adapter, and safety-layer interfaces documented so a later Python or GPU-backed learned policy service can replace the scripted baseline without redesigning the UI. A FastAPI service, WebSocket transport, Docker deployment, and GPU service are not required for the MVP.
 
 ## 6. MVP acceptance criteria
 
 - An operator can select a language (English or Simplified Chinese) and start a seeded mission from the browser.
 - The scene contains a submerged vehicle, internal and external suspected victims, rocks, and pipes (all static).
-- The UUV navigates toward targets using a scripted deterministic policy and reaches a confirmed target or enters a documented safe fallback state.
+- The UUV navigates toward targets using the documented MFI-inspired potential-field baseline and reaches a confirmed target or enters a documented safe fallback state.
 - At least one obstacle-avoidance event is visible in the UI.
 - The operator can confirm or reject targets (queued sequentially), pause, take manual control, and request return.
 - The safety layer remains active during manual control and overrides unsafe commands.
