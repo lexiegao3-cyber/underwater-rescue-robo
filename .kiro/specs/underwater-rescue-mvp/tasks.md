@@ -36,11 +36,11 @@
   - **Acceptance**: Types defined for: MissionState, UUVState, BatteryState, OxygenState, MissionPhase
   - **Time**: 20 min
 
-- [ ] 2.2 Define TypeScript types for scenario configuration
+- [x] 2.2 Define TypeScript types for scenario configuration
   - **Acceptance**: Types defined for: ScenarioConfig, ObstacleConfig, TargetConfig, VehicleConfig
   - **Time**: 20 min
 
-- [ ] 2.3 Implement seeded random number generator
+- [x] 2.3 Implement seeded random number generator
   - **Acceptance**: Seeded RNG produces identical sequences for same seed, unit test passes
   - **Time**: 30 min
 

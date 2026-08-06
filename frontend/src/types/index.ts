@@ -305,3 +305,172 @@ export interface MissionState {
   pathLength: number;                 // Total path length (meters)
   manualInterventions: number;        // Count of manual interventions
 }
+
+// ============================================================================
+// Scenario Configuration
+// ============================================================================
+
+/**
+ * Scenario name
+ * Three predefined demonstration scenarios
+ */
+export type ScenarioName = 'normal' | 'low_visibility' | 'low_oxygen';
+
+/**
+ * Difficulty level
+ * Affects obstacle density, target distance, and current magnitude
+ */
+export type Difficulty = 'easy' | 'standard' | 'hard';
+
+/**
+ * Obstacle type
+ */
+export type ObstacleType = 'rock' | 'pipe' | 'vehicle' | 'unknown';
+
+/**
+ * Target type for configuration
+ */
+export type TargetType = 'vehicle' | 'external_victim' | 'internal_victim';
+
+// ============================================================================
+// Obstacle Configuration
+// ============================================================================
+
+/**
+ * Base obstacle configuration
+ */
+interface BaseObstacleConfig {
+  id: string;                   // Unique obstacle ID
+  type: ObstacleType;           // Obstacle type
+  position: Position2D;         // Position (meters)
+}
+
+/**
+ * Circular obstacle configuration (rocks)
+ */
+export interface CircularObstacleConfig extends BaseObstacleConfig {
+  type: 'rock' | 'unknown';
+  radius: number;               // Radius (meters)
+}
+
+/**
+ * Rectangular obstacle configuration (pipes)
+ */
+export interface RectangularObstacleConfig extends BaseObstacleConfig {
+  type: 'pipe';
+  width: number;                // Width (meters)
+  height: number;               // Height (meters)
+  rotation: number;             // Rotation angle (radians)
+}
+
+/**
+ * Vehicle obstacle configuration
+ */
+export interface VehicleObstacleConfig extends BaseObstacleConfig {
+  type: 'vehicle';
+  radius: number;               // Approximate radius (meters)
+  length?: number;              // Optional length (meters)
+  width?: number;               // Optional width (meters)
+}
+
+/**
+ * Union type for all obstacle configurations
+ */
+export type ObstacleConfig =
+  | CircularObstacleConfig
+  | RectangularObstacleConfig
+  | VehicleObstacleConfig;
+
+// ============================================================================
+// Target Configuration
+// ============================================================================
+
+/**
+ * Target configuration for scenario setup
+ */
+export interface TargetConfig {
+  id: string;                   // Unique target ID
+  type: TargetType;             // Target type
+  position: Position2D;         // Position (meters)
+  confidence: number;           // Initial confidence score (0.0-1.0)
+  modality: SensorModality;     // Detection modality (camera, sonar, marker)
+}
+
+// ============================================================================
+// Vehicle Configuration
+// ============================================================================
+
+/**
+ * Initial vehicle pose (position + heading)
+ */
+export interface InitialPose {
+  position: Position2D;         // Initial position (meters)
+  heading: number;              // Initial heading (radians)
+}
+
+/**
+ * Vehicle (UUV) configuration
+ */
+export interface VehicleConfig {
+  initialPose: InitialPose;     // Initial pose (position + heading)
+  radius: number;               // Vehicle radius for collision detection (meters)
+  maxVelocity: number;          // Maximum forward velocity (m/s)
+  maxAngularVelocity: number;   // Maximum angular velocity (rad/s)
+}
+
+// ============================================================================
+// Mission Boundary
+// ============================================================================
+
+/**
+ * Rectangular mission boundary (geofence)
+ */
+export interface MissionBoundary {
+  minX: number;                 // Minimum X coordinate (meters)
+  maxX: number;                 // Maximum X coordinate (meters)
+  minY: number;                 // Minimum Y coordinate (meters)
+  maxY: number;                 // Maximum Y coordinate (meters)
+}
+
+// ============================================================================
+// Scenario Configuration
+// ============================================================================
+
+/**
+ * Complete scenario configuration
+ * Defines all parameters for a reproducible mission scenario
+ */
+export interface ScenarioConfig {
+  // Scenario identification
+  scenarioName: ScenarioName;   // Scenario name (normal, low_visibility, low_oxygen)
+  difficulty: Difficulty;       // Difficulty level (easy, standard, hard)
+  seed: number;                 // Random seed for reproducibility
+  
+  // Environment
+  visibility: number;           // Visibility factor (0.0-1.0)
+  waterCurrent: {
+    magnitude: number;          // Current magnitude (m/s)
+    direction: number;          // Current direction (radians)
+  };
+  
+  // Mission boundary
+  missionBoundary: MissionBoundary;  // Rectangular mission area
+  
+  // Starting and target positions
+  startingPosition: Position2D; // UUV starting position (meters)
+  targetPosition: Position2D;   // Primary target position (meters)
+  
+  // Obstacles and targets
+  obstacles: ObstacleConfig[];  // List of obstacles
+  targets: TargetConfig[];      // List of targets
+  
+  // Vehicle configuration
+  vehicleConfig: VehicleConfig; // UUV configuration
+  
+  // Initial resources
+  initialBattery: number;       // Initial battery level (percent, 0-100)
+  initialOxygen: number;        // Initial oxygen level (units)
+  
+  // Simulation parameters
+  timestep: number;             // Simulation timestep (seconds, typically 0.1)
+}
