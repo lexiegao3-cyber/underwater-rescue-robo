@@ -11,4 +11,5 @@ export * from './occupancyGrid';
 export * from './perceptionDetector';
 export * from './potentialFieldPolicy';
 export * from './scenarioGenerator';
+export * from './safetyLayer';
 export * from './sonarSimulator';

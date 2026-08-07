@@ -124,31 +124,31 @@
 
 ### 6. Safety layer and command priority
 
-- [ ] 6.1 Implement obstacle-distance safety check
+- [x] 6.1 Implement obstacle-distance safety check
   - **Acceptance**: Safety layer warns inside the 1.5m safe margin and rejects or falls back before predicted distance reaches the 0.8m critical threshold
   - **Time**: 30 min
 
-- [ ] 6.2 Implement actuator limit and action-rate limit checks
+- [x] 6.2 Implement actuator limit and action-rate limit checks
   - **Acceptance**: Safety layer clips actions exceeding velocity, angular velocity, or rate-of-change limits
   - **Time**: 30 min
 
-- [ ] 6.3 Implement battery and oxygen feasibility checks
+- [x] 6.3 Implement battery and oxygen feasibility checks
   - **Acceptance**: Safety layer triggers warning when resources insufficient for return, unit test passes
   - **Time**: 45 min
 
-- [ ] 6.4 Implement mission boundary (geofence) check
+- [x] 6.4 Implement mission boundary (geofence) check
   - **Acceptance**: Safety layer prevents UUV from leaving mission area boundaries
   - **Time**: 20 min
 
-- [ ] 6.5 Implement command priority system (pause > manual > return > autonomous)
+- [x] 6.5 Implement command priority system (pause > manual > return > autonomous)
   - **Acceptance**: Command priority enforced, higher priority commands suppress lower priority
   - **Time**: 45 min
 
-- [ ] 6.6 Implement safe fallback states (hold, slow mode, manual prompt)
+- [x] 6.6 Implement safe fallback states (hold, slow mode, manual prompt)
   - **Acceptance**: When collision imminent or resources critical, system enters fallback state
   - **Time**: 30 min
 
-- [ ] 6.7 Add safety layer override for manual control
+- [x] 6.7 Add safety layer override for manual control
   - **Acceptance**: Manual commands pass through safety layer, unsafe commands rejected, event logged
   - **Time**: 30 min
 
