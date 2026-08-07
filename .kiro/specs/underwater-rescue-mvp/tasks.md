@@ -154,23 +154,23 @@
 
 ### 7. Target confirmation queue
 
-- [ ] 7.1 Implement target detection event
+- [x] 7.1 Implement target detection event
   - **Acceptance**: Camera-like detection requires target distance <=4m and visibility >=0.35; sonar-like detection requires distance <=8m; confidence >=0.45 enters the queue
   - **Time**: 20 min
 
-- [ ] 7.2 Implement target confirmation queue (FIFO)
+- [x] 7.2 Implement target confirmation queue (FIFO)
   - **Acceptance**: Multiple detections added to queue, presented sequentially
   - **Time**: 30 min
 
-- [ ] 7.3 Implement target confirmation handler
+- [x] 7.3 Implement target confirmation handler
   - **Acceptance**: Operator confirms target, mission state transitions to "target_confirmed", target added to confirmed list
   - **Time**: 30 min
 
-- [ ] 7.4 Implement target rejection handler
+- [x] 7.4 Implement target rejection handler
   - **Acceptance**: Operator rejects target, system discards target, returns to "searching" state
   - **Time**: 30 min
 
-- [ ] 7.5 Add internal victim marker (sonar-only detection)
+- [x] 7.5 Add internal victim marker (sonar-only detection)
   - **Acceptance**: Internal victim represented as pre-placed marker visible only to sonar, not camera
   - **Time**: 20 min
 

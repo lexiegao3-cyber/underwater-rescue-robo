@@ -13,3 +13,4 @@ export * from './potentialFieldPolicy';
 export * from './scenarioGenerator';
 export * from './safetyLayer';
 export * from './sonarSimulator';
+export * from './targetConfirmationQueue';
